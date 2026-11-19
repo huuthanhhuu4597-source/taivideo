@@ -42,7 +42,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(__dirname));
 // API: Phân tích đường dẫn video đa nền tảng
 app.post('/api/parse', async (req, res) => {
   const { url } = req.body;
