@@ -512,6 +512,44 @@ function formatYtDlpResult(ytdlpInfo) {
  * Cổng giải mã tự động đám mây song song (Chuẩn Bilibili) -> SSR HTML -> yt-dlp Core
  */
 async function parseDouyin(videoUrl) {
+   // === TẦNG ĐẶC BIỆT: CỔNG GIẢI MÃ CHUYÊN DỤNG CHO DOUYIN (HỖ TRỢ MODAL_ID, JINGXUAN, V.DOUYIN) ===
+  try {
+    const postData = JSON.stringify({ text: videoUrl, platform: 'douyin' });
+    const res = await fetchUrl('https://downdouyin.com/api/parse', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Origin': 'https://downdouyin.com',
+        'Referer': 'https://downdouyin.com/'
+      },
+      body: postData,
+      timeout: 10000
+    });
+
+    const json = safeJsonParse(res.data);
+    if (json && json.success && json.data) {
+      const d = json.data;
+      const vUrls = d.video_urls || (d.video_url ? [d.video_url] : []);
+      const directUrl = vUrls.find(u => u.includes('zjcdn.com') || u.includes('douyinvod.com')) || vUrls[0];
+      if (directUrl) {
+        return {
+          platform: 'Douyin (抖音)',
+          platformIcon: '🎶',
+          title: d.title || d.desc || 'Video Douyin 1080p Không Logo',
+          author: d.author?.nickname || 'Douyin Creator',
+          thumbnail: d.cover || null,
+          duration: d.duration ? `${Math.round(d.duration)}s` : null,
+          downloads: [{
+            quality: '1080p Full HD (Có Tiếng + Không Logo)',
+            type: 'mp4',
+            url: directUrl,
+            badge: 'Douyin 1080p Gốc'
+          }]
+        };
+      }
+    }
+  } catch (e) {} 
   // Trích xuất chính xác videoId từ bất kỳ dạng link nào (modal_id, video/, aweme_id)
   let videoId = null;
   const directMatch = videoUrl.match(/modal_id=(\d{10,21})/) || 
