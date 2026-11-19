@@ -1,5 +1,5 @@
 {
-  "name": "snapultra-downloader",
+  "name": "taivideo-app",
   "version": "1.0.0",
   "description": "Multi-platform video downloader web app (TikTok, Douyin, Bilibili, YouTube, Facebook)",
   "main": "server.js",
