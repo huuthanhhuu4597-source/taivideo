@@ -1,0 +1,43 @@
+================================================================================
+HƯỚNG DẪN TRIỂN KHAI SNAPULTRA LÊN MÁY CHỦ ĐÁM MÂY CHẠY 24/24 (CÁCH CHUYÊN NGHIỆP)
+================================================================================
+
+Để trang web của bạn chạy 24/24 trên toàn thế giới mà không cần bật máy tính,
+ai gõ tên miền riêng (ví dụ: snapultra.click) cũng vào thẳng ngay lập tức,
+bạn thực hiện theo 3 bước cực kỳ đơn giản sau:
+
+--------------------------------------------------------------------------------
+BƯỚC 1: MUA TÊN MIỀN RIÊNG
+--------------------------------------------------------------------------------
+1. Bạn vào nhà cung cấp tên miền (như trong ảnh giỏ hàng bạn đã chọn snapultra.click 19.000đ).
+2. Tiến hành thanh toán để sở hữu tên miền đó trong 1 năm.
+
+--------------------------------------------------------------------------------
+BƯỚC 2: TẠO MÁY CHỦ CHẠY WEB MIỄN PHÍ TẠI RENDER.COM
+--------------------------------------------------------------------------------
+Render.com là nền tảng máy chủ đám mây phổ biến nhất thế giới hiện nay, có gói 0đ
+chuyên dùng để chạy web Node.js 24/24:
+
+1. Vào trang web: https://render.com -> Bấm "Get Started" (hoặc "Sign In").
+   Bạn có thể đăng nhập nhanh bằng tài khoản Google.
+2. Tại bảng điều khiển Render, bấm nút "+ New" -> Chọn "Web Service".
+3. Chọn tải mã nguồn SnapUltra lên (hoặc liên kết qua tài khoản GitHub).
+4. Render sẽ tự động đọc file "Dockerfile" tôi đã tạo sẵn trong thư mục dự án:
+   - Tự động cài đặt Node.js mới nhất
+   - Tự động cài đặt engine yt-dlp và FFmpeg
+   - Tự động khởi động máy chủ chạy 24/7
+5. Khi hoàn tất (khoảng 2-3 phút), Render sẽ cấp cho bạn một đường link web chính thức.
+
+--------------------------------------------------------------------------------
+BƯỚC 3: GẮN TÊN MIỀN RIÊNG VÀO (BẤM THẲNG LÀ VÀO)
+--------------------------------------------------------------------------------
+1. Trong trang quản lý của Render -> Bấm vào mục "Settings" -> Kéo xuống phần "Custom Domains".
+2. Bấm "Add Custom Domain" và gõ tên miền của bạn vào (ví dụ: snapultra.click).
+3. Render sẽ hiện ra 1 bản ghi CNAME (ví dụ: snapultra.onrender.com).
+4. Bạn quay lại trang quản lý tên miền bạn đã mua -> Thêm bản ghi CNAME đó vào là xong!
+5. Hệ thống sẽ tự động cấp chứng chỉ bảo mật SSL (ổ khóa xanh HTTPS) miễn phí trọn đời.
+
+KẾT QUẢ:
+Bất kỳ ai trên thế giới dùng điện thoại hay máy tính, chỉ cần gõ "snapultra.click" là
+vào thẳng web tải video SnapUltra của bạn 24/7, tốc độ cực nhanh và chuyên nghiệp!
+================================================================================

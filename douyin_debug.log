@@ -1,0 +1,250 @@
+[6:11:48 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709333983179410698 -> cleanUrl=https://www.douyin.com/video/7709333983179410698 (videoId=7709333983179410698)
+[6:11:48 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[6:11:51 PM] Tầng 1: không bóc được URL từ HTML
+[6:11:51 PM] Thử Tầng 2: Douyin desktop SSR...
+[6:11:53 PM] Tầng 2: không bóc được URL từ SSR
+[6:11:53 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[6:11:53 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[6:11:53 PM] Thử Tầng 4: Public APIs...
+[6:11:56 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[6:11:56 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[6:11:58 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[6:11:58 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[6:12:01 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:12:04 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:12:07 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:12:09 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:12:14 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7709333983179410698
+[6:12:17 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[6:12:17 PM] Thử Tầng 6: yt-dlp + cookie file...
+[6:12:18 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7709333983179410698: Fresh cookies (not necessarily logged in) are needed
+
+[6:12:18 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[6:15:02 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709333983179410698 -> cleanUrl=https://www.douyin.com/video/7709333983179410698 (videoId=7709333983179410698)
+[6:15:02 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[6:15:03 PM] Tầng 1: không bóc được URL từ HTML
+[6:15:03 PM] Thử Tầng 2: Douyin desktop SSR...
+[6:15:04 PM] Tầng 2: không bóc được URL từ SSR
+[6:15:04 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[6:15:05 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[6:15:05 PM] Thử Tầng 4: Public APIs...
+[6:15:12 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[6:15:12 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[6:15:19 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[6:15:19 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[6:15:21 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:15:24 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:15:27 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:15:30 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:15:35 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7709333983179410698
+[6:15:38 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[6:15:38 PM] Thử Tầng 6: yt-dlp + cookie file...
+[6:15:39 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7709333983179410698: Fresh cookies (not necessarily logged in) are needed
+
+[6:15:39 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[6:36:57 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709333983179410698 -> cleanUrl=https://www.douyin.com/video/7709333983179410698 (videoId=7709333983179410698)
+[6:36:57 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[6:36:58 PM] Tầng 1: không bóc được URL từ HTML
+[6:36:58 PM] Thử Tầng 2: Douyin desktop SSR...
+[6:36:59 PM] Tầng 2: không bóc được URL từ SSR
+[6:36:59 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[6:36:59 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[6:36:59 PM] Thử Tầng 4: Public APIs...
+[6:37:02 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[6:37:02 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[6:37:04 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[6:37:04 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[6:37:07 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:09 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:12 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:14 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:19 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7709333983179410698
+[6:37:21 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[6:37:21 PM] Thử Tầng 6: yt-dlp + cookie file...
+[6:37:22 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7709333983179410698: Fresh cookies (not necessarily logged in) are needed
+
+[6:37:22 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[6:37:26 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7706106419891735808 -> cleanUrl=https://www.douyin.com/video/7706106419891735808 (videoId=7706106419891735808)
+[6:37:26 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[6:37:27 PM] Tầng 1: không bóc được URL từ HTML
+[6:37:27 PM] Thử Tầng 2: Douyin desktop SSR...
+[6:37:29 PM] Tầng 2: không bóc được URL từ SSR
+[6:37:29 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[6:37:29 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[6:37:29 PM] Thử Tầng 4: Public APIs...
+[6:37:33 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[6:37:33 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[6:37:38 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[6:37:38 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[6:37:41 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:44 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:46 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:49 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[6:37:53 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7706106419891735808
+[6:37:56 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[6:37:56 PM] Thử Tầng 6: yt-dlp + cookie file...
+[6:37:58 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7706106419891735808: Fresh cookies (not necessarily logged in) are needed
+
+[6:37:58 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[7:42:20 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7706106419891735808 -> cleanUrl=https://www.douyin.com/video/7706106419891735808 (videoId=7706106419891735808)
+[7:42:20 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[7:42:21 PM] Tầng 1: không bóc được URL từ HTML
+[7:42:21 PM] Thử Tầng 2: Douyin desktop SSR...
+[7:42:23 PM] Tầng 2: không bóc được URL từ SSR
+[7:42:23 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[7:42:23 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[7:42:23 PM] Thử Tầng 4: Public APIs...
+[7:42:25 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[7:42:25 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[7:42:26 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[7:42:26 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[7:42:29 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:42:31 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:42:34 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:42:36 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:42:41 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7706106419891735808
+[7:42:43 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[7:42:43 PM] Thử Tầng 6: yt-dlp + cookie file...
+[7:42:45 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7706106419891735808: Fresh cookies (not necessarily logged in) are needed
+
+[7:42:45 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[7:46:56 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7706106419891735808 -> cleanUrl=https://www.douyin.com/video/7706106419891735808 (videoId=7706106419891735808)
+[7:46:56 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[7:47:00 PM] Tầng 1: không bóc được URL từ HTML
+[7:47:00 PM] Thử Tầng 2: Douyin desktop SSR...
+[7:47:02 PM] Tầng 2: không bóc được URL từ SSR
+[7:47:02 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[7:47:03 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[7:47:03 PM] Thử Tầng 4: Public APIs...
+[7:47:07 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[7:47:07 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[7:47:11 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[7:47:11 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[7:47:13 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:47:16 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:47:19 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:47:21 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:47:26 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7706106419891735808
+[7:47:28 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[7:47:28 PM] Thử Tầng 6: yt-dlp + cookie file...
+[7:47:34 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7706106419891735808: Fresh cookies (not necessarily logged in) are needed
+
+[7:47:34 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[8:44:40 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7706106419891735808 -> cleanUrl=https://www.douyin.com/video/7706106419891735808 (videoId=7706106419891735808)
+[8:44:40 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[8:44:41 PM] Tầng 1: không bóc được URL từ HTML
+[8:44:41 PM] Thử Tầng 2: Douyin desktop SSR...
+[8:44:42 PM] Tầng 2: không bóc được URL từ SSR
+[8:44:42 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[8:44:42 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[8:44:42 PM] Thử Tầng 4: Public APIs...
+[8:44:43 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[8:44:43 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[8:44:45 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[8:44:45 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[8:44:47 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[8:44:50 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[8:44:54 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[8:44:59 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[8:45:06 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7706106419891735808
+[8:45:10 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[8:45:10 PM] Thử Tầng 6: yt-dlp + cookie file...
+[8:45:13 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7706106419891735808: Fresh cookies (not necessarily logged in) are needed
+
+[8:45:13 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[10:32:39 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7704993029291117834 -> cleanUrl=https://www.douyin.com/video/7704993029291117834 (videoId=7704993029291117834)
+[10:32:39 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[10:32:40 PM] Tầng 1: không bóc được URL từ HTML
+[10:32:40 PM] Thử Tầng 2: Douyin desktop SSR...
+[10:32:41 PM] Tầng 2: không bóc được URL từ SSR
+[10:32:41 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[10:32:41 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[10:32:41 PM] Thử Tầng 4: Public APIs...
+[10:32:43 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[10:32:43 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[10:32:45 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[10:32:45 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[10:32:48 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:32:50 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:32:53 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:32:55 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:33:00 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7704993029291117834
+[10:33:02 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[10:33:02 PM] Thử Tầng 6: yt-dlp + cookie file...
+[10:33:05 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7704993029291117834: Fresh cookies (not necessarily logged in) are needed
+
+[10:33:05 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[10:33:22 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7704993029291117834 -> cleanUrl=https://www.douyin.com/video/7704993029291117834 (videoId=7704993029291117834)
+[10:33:22 PM] Thử Tầng 1: iesdouyin mobile SSR...
+[10:33:23 PM] Tầng 1: không bóc được URL từ HTML
+[10:33:23 PM] Thử Tầng 2: Douyin desktop SSR...
+[10:33:26 PM] Tầng 2: không bóc được URL từ SSR
+[10:33:26 PM] Thử Tầng 3: iesdouyin iteminfo API...
+[10:33:26 PM] Tầng 3 Lỗi: Unexpected end of JSON input
+[10:33:26 PM] Thử Tầng 4: Public APIs...
+[10:33:28 PM] Tầng 4 (TiklyDown) Lỗi: write EPROTO B4700000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:openssl\ssl\record\rec_layer_s3.c:918:SSL alert number 80
+
+[10:33:28 PM] Tầng 4 (Pearktrue) Lỗi: getaddrinfo ENOTFOUND api.pearktrue.cn
+[10:33:29 PM] Tầng 4 (TenAPI) Lỗi: Unexpected token 'e', "error code: 502
+" is not valid JSON
+[10:33:29 PM] Thử Tầng 5: yt-dlp cookies from browser...
+[10:33:32 PM] Tầng 5 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:33:34 PM] Tầng 5 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:33:37 PM] Tầng 5 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:33:39 PM] Tầng 5 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[10:33:43 PM] Tầng 5 (firefox) Lỗi: ERROR: Unsupported URL: https://www.douyin.com/jingxuan?modal_id=7704993029291117834
+[10:33:46 PM] Tầng 5 (opera) Lỗi: ERROR: could not find opera cookies database in "C:\Users\ADMIN\AppData\Roaming\Opera Software\Opera Stable"
+[10:33:46 PM] Thử Tầng 6: yt-dlp + cookie file...
+[10:33:47 PM] Tầng 6 Lỗi: ERROR: [Douyin] 7704993029291117834: Fresh cookies (not necessarily logged in) are needed
+
+[10:33:47 PM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[11:35:16 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709133141776158003 -> cleanUrl=https://www.douyin.com/video/7709133141776158003 (videoId=7709133141776158003)
+[11:35:16 PM] Thử Tầng 1: Cổng giải mã tự động đám mây song song...
+[11:35:22 PM] ✅ Tầng 1 THÀNH CÔNG (Cổng giải mã đám mây siêu tốc)!
+[11:37:15 PM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709399827603279155 -> cleanUrl=https://www.douyin.com/video/7709399827603279155 (videoId=7709399827603279155)
+[11:37:15 PM] Thử Tầng 1: Cổng giải mã tự động đám mây song song...
+[11:37:19 PM] ✅ Tầng 1 THÀNH CÔNG (Cổng giải mã đám mây siêu tốc)!
+[7:58:14 AM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709399827603279155 -> cleanUrl=https://www.douyin.com/video/7709399827603279155 (videoId=7709399827603279155)
+[7:58:14 AM] Thử Tầng 1: Cổng giải mã tự động đám mây song song...
+[7:58:15 AM] Tầng 1: Cổng giải mã đám mây không phản hồi, chuyển sang tầng dự phòng
+[7:58:15 AM] Thử Tầng 2: Bóc tách SSR HTML...
+[7:58:15 AM] Thử Tầng 3: yt-dlp core + cookie file...
+[7:58:17 AM] Tầng 3 Lỗi: ERROR: [Douyin] 7709399827603279155: Fresh cookies (not necessarily logged in) are needed
+
+[7:58:17 AM] Thử Tầng 4: yt-dlp cookies từ trình duyệt...
+[7:58:18 AM] Tầng 4 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:20 AM] Tầng 4 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:21 AM] Tầng 4 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:22 AM] Tầng 4 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:24 AM] Tầng 4 (firefox) Lỗi: ERROR: [Douyin] 7709399827603279155: Fresh cookies (not necessarily logged in) are needed
+[7:58:24 AM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
+[7:58:28 AM] [Bắt đầu] url=https://www.douyin.com/jingxuan?modal_id=7709399827603279155 -> cleanUrl=https://www.douyin.com/video/7709399827603279155 (videoId=7709399827603279155)
+[7:58:28 AM] Thử Tầng 1: Cổng giải mã tự động đám mây song song...
+[7:58:29 AM] Tầng 1: Cổng giải mã đám mây không phản hồi, chuyển sang tầng dự phòng
+[7:58:29 AM] Thử Tầng 2: Bóc tách SSR HTML...
+[7:58:29 AM] Thử Tầng 3: yt-dlp core + cookie file...
+[7:58:31 AM] Tầng 3 Lỗi: ERROR: [Douyin] 7709399827603279155: Fresh cookies (not necessarily logged in) are needed
+
+[7:58:31 AM] Thử Tầng 4: yt-dlp cookies từ trình duyệt...
+[7:58:32 AM] Tầng 4 (chromium:C:\Users\ADMIN\AppData\Local\CocCoc\Browser\User Data) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:33 AM] Tầng 4 (edge) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:35 AM] Tầng 4 (chrome) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:36 AM] Tầng 4 (brave) Lỗi: ERROR: Could not copy Chrome cookie database. See  https://github.com/yt-dlp/yt-dlp/issues/7271  for more info
+[7:58:38 AM] Tầng 4 (firefox) Lỗi: ERROR: [Douyin] 7709399827603279155: Fresh cookies (not necessarily logged in) are needed
+[7:58:38 AM] ❌ TẤT CẢ CÁC TẦNG ĐỀU THẤT BẠI!
