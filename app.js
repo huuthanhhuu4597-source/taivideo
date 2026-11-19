@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:4000' : '';
+const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:4000' : '';
 
   const input = document.getElementById('videoUrlInput');
   const btnDownload = document.getElementById('btnDownload');
