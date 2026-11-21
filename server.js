@@ -68,16 +68,16 @@ app.post('/api/parse', async (req, res) => {
 });
 
 /**
- * BỘ ĐIỀU PHỐI LUỒNG TẢI SIÊU BỀN (ULTRA-RESILIENT RANGE & CHROME RESUME ENGINE)
- * - Đảm bảo luôn trả về HTTP 206 Partial Content khi Chrome bấm "Tiếp tục" (Resume)
- * - Tự động cắt byte (Byte-Slicing) nếu CDN gốc trả về 200 thay vì 206
- * - Giữ ETag và Last-Modified cố định để Chrome KHÔNG BAO GIỜ xóa file tải dở về 0%
+ * BỘ ĐIỀU PHỐI LUỒNG TẢI SIÊU TỐC & HỖ TRỢ RESUME TỨC THÌ (INSTANT CHROME RESUME ENGINE)
+ * - Tự động loại bỏ If-Range để máy chủ CDN Trung Quốc lập tức chấp nhận và trả về HTTP 206
+ * - Truyền dữ liệu trực tiếp bằng pipe() để dữ liệu đổ về Chrome ngay lập tức (0.1 giây)
+ * - Khóa ETag cố định để Chrome nhớ trọn vẹn phần đã tải (không bao giờ quay về 0%)
  */
 function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = {}, totalKnownSize = 0) {
   req.setTimeout(0);
   res.setTimeout(0);
 
-  // 1. Phân tích yêu cầu Range từ Chrome (Ví dụ: bytes=734003200-)
+  // 1. Phân tích yêu cầu Range từ Chrome (Ví dụ: bytes=2254857830-)
   const rangeHeader = req.headers.range;
   let clientStart = null;
   let clientEnd = null;
@@ -134,6 +134,7 @@ function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = 
       const headers = {
         'User-Agent': userAgent,
         'Referer': referer,
+        'Accept-Encoding': 'identity',
         ...customHeaders
       };
 
@@ -142,13 +143,11 @@ function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = 
       if (upstreamStart > 0) {
         headers['Range'] = "bytes=" + upstreamStart + "-";
       }
-      if (req.headers['if-range']) {
-        headers['If-Range'] = req.headers['if-range'];
-      }
 
+      // TUYỆT ĐỐI KHÔNG gửi If-Range của client lên CDN để tránh CDN từ chối Range và trả về 200
       const agent = parsed.protocol === 'https:' ? httpsAgent : httpAgent;
 
-      currentActiveReq = client.get(currentFetchUrl, { headers, agent, highWaterMark: 1024 * 1024 }, (stream) => {
+      currentActiveReq = client.get(currentFetchUrl, { headers, agent, highWaterMark: 2 * 1024 * 1024 }, (stream) => {
         currentActiveStream = stream;
 
         // Xử lý chuyển hướng 301/302
@@ -189,7 +188,7 @@ function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = 
           if (res.socket) res.socket.setNoDelay(true);
 
           if (isRangeRequest) {
-            // BẮT BUỘC TRẢ VỀ 206 ĐỂ CHROME TẢI NỐI TIẾP KHÔNG RESET VỀ 0%
+            // BẮT BUỘC TRẢ VỀ 206 ĐỂ CHROME TẢI NỐI TIẾP
             res.status(206);
             const end = (clientEnd !== null) ? clientEnd : (fullFileSize > 0 ? fullFileSize - 1 : undefined);
             if (fullFileSize > 0 && end !== undefined) {
@@ -207,29 +206,27 @@ function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = 
           }
         }
 
-        // XỬ LÝ TRUYỀN DỮ LIỆU:
-        // Nếu upstream trả về 200 thay vì 206, ta tự động bỏ qua (skip) các byte đầu đã tải
-        let skipBytes = 0;
-        if (isRangeRequest && !upstreamIs206 && upstreamStart > 0 && byteOffset === 0) {
-          skipBytes = upstreamStart;
-        }
-
-        stream.on('data', (chunk) => {
-          if (skipBytes > 0) {
-            if (chunk.length <= skipBytes) {
-              skipBytes -= chunk.length;
-              return;
-            } else {
-              chunk = chunk.slice(skipBytes);
-              skipBytes = 0;
+        // TRUYỀN DỮ LIỆU TỐC ĐỘ TỐI ĐA VỀ CHROME NGAY LẬP TỨC
+        if (upstreamIs206 || !isRangeRequest) {
+          // CDN trả về đúng 206 -> Bơm trực tiếp vào Chrome siêu tốc không delay!
+          stream.pipe(res);
+        } else {
+          // Fallback nếu CDN gửi 200: Bỏ qua các byte đã tải và bơm tiếp
+          let skipBytes = upstreamStart;
+          stream.on('data', (chunk) => {
+            if (skipBytes > 0) {
+              if (chunk.length <= skipBytes) {
+                skipBytes -= chunk.length;
+                return;
+              } else {
+                chunk = chunk.slice(skipBytes);
+                skipBytes = 0;
+              }
             }
-          }
-          res.write(chunk);
-        });
-
-        stream.on('end', () => {
-          if (!res.writableEnded) res.end();
-        });
+            res.write(chunk);
+          });
+          stream.on('end', () => { if (!res.writableEnded) res.end(); });
+        }
 
         stream.on('error', (err) => {
           console.warn('[Stream Error]', err.message);
@@ -352,7 +349,7 @@ app.get('/api/bili-download', async (req, res) => {
   function httpsGet(url, headers) {
     return new Promise((resolve, reject) => {
       const opts = new URL(url);
-      require('https').get({
+      const req = require('https').get({
         hostname: opts.hostname,
         path: opts.pathname + opts.search,
         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', ...headers }
@@ -363,7 +360,12 @@ app.get('/api/bili-download', async (req, res) => {
         let d = '';
         r.on('data', c => d += c);
         r.on('end', () => resolve({ status: r.statusCode, body: d, headers: r.headers }));
-      }).on('error', reject);
+      });
+      req.setTimeout(8000, () => {
+        req.destroy();
+        reject(new Error('Timeout'));
+      });
+      req.on('error', reject);
     });
   }
 
