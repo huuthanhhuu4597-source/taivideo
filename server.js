@@ -67,41 +67,54 @@ app.post('/api/parse', async (req, res) => {
   }
 });
 
-// Proxy Stream Download: Hỗ trợ video dài, tự động Follow Redirect (302/301), sửa URL // và giữ Referer chống 403
-app.get('/api/stream-download', (req, res) => {
-  let targetUrl = req.query.url;
-  const filename = req.query.filename || 'video.mp4';
-
-  if (!targetUrl) return res.status(400).send('Thiếu URL tải về');
-
-  // Chuẩn hóa URL nếu thiếu giao thức (//v3-web... -> https://v3-web...)
-  targetUrl = String(targetUrl).trim();
-  if (targetUrl.startsWith('//')) {
-    targetUrl = 'https:' + targetUrl;
-  }
-
-  // VÔ HIỆU HÓA TIMEOUT: Giữ kết nối mở liên tục cho đến khi tải hoàn toàn 100%
+/**
+ * BỘ ĐIỀU PHỐI LUỒNG TẢI SIÊU BỀN (ULTRA-RESILIENT RANGE & CHROME RESUME ENGINE)
+ * - Đảm bảo luôn trả về HTTP 206 Partial Content khi Chrome bấm "Tiếp tục" (Resume)
+ * - Tự động cắt byte (Byte-Slicing) nếu CDN gốc trả về 200 thay vì 206
+ * - Giữ ETag và Last-Modified cố định để Chrome KHÔNG BAO GIỜ xóa file tải dở về 0%
+ */
+function streamToClientWithRange(req, res, targetUrl, filename, customHeaders = {}, totalKnownSize = 0) {
   req.setTimeout(0);
   res.setTimeout(0);
 
-  let totalExpectedBytes = 0;
-  let totalDownloadedBytes = 0;
-  let currentTargetUrl = targetUrl;
+  // 1. Phân tích yêu cầu Range từ Chrome (Ví dụ: bytes=734003200-)
+  const rangeHeader = req.headers.range;
+  let clientStart = null;
+  let clientEnd = null;
+
+  if (rangeHeader) {
+    const match = rangeHeader.match(/bytes=(\d+)-(\d+)?/);
+    if (match) {
+      clientStart = parseInt(match[1], 10);
+      if (match[2]) clientEnd = parseInt(match[2], 10);
+    }
+  }
+
+  const isRangeRequest = (clientStart !== null);
+
+  // 2. Tạo ETag và Last-Modified cố định (BẮT BUỘC để Chrome cho phép nối tiếp)
+  const cleanUrl = String(targetUrl).split('?')[0];
+  const etag = '"' + crypto.createHash('md5').update(filename + cleanUrl).digest('hex') + '"';
+  const lastModified = 'Sun, 01 Jan 2026 00:00:00 GMT';
+
   let isHeadersSent = false;
-  let activeStream = null;
-  let activeReq = null;
+  let currentActiveReq = null;
+  let currentActiveStream = null;
 
   req.on('close', () => {
-    if (activeStream) { try { activeStream.destroy(); } catch (e) {} }
-    if (activeReq) { try { activeReq.destroy(); } catch (e) {} }
+    if (currentActiveStream) { try { currentActiveStream.destroy(); } catch (e) {} }
+    if (currentActiveReq) { try { currentActiveReq.destroy(); } catch (e) {} }
   });
 
-  function connectAndStream(urlToFetch, byteOffset = 0, retriesLeft = 10) {
+  function connect(currentFetchUrl, byteOffset = 0, redirectsLeft = 5, retriesLeft = 10) {
     if (res.writableEnded || res.destroyed) return;
-    currentTargetUrl = urlToFetch;
+    if (redirectsLeft <= 0) {
+      if (!res.headersSent) res.status(502).send('Quá nhiều chuyển hướng');
+      return;
+    }
 
     try {
-      let parsed = new URL(urlToFetch);
+      const parsed = new URL(currentFetchUrl);
       const client = parsed.protocol === 'https:' ? https : http;
 
       let referer = parsed.origin;
@@ -120,13 +133,14 @@ app.get('/api/stream-download', (req, res) => {
 
       const headers = {
         'User-Agent': userAgent,
-        'Referer': referer
+        'Referer': referer,
+        ...customHeaders
       };
 
-      if (byteOffset > 0) {
-        headers['Range'] = "bytes=" + byteOffset + "-";
-      } else if (req.headers.range) {
-        headers['Range'] = req.headers.range;
+      // Xác định byte bắt đầu cần kéo từ máy chủ CDN
+      const upstreamStart = (byteOffset > 0) ? byteOffset : (clientStart !== null ? clientStart : 0);
+      if (upstreamStart > 0) {
+        headers['Range'] = "bytes=" + upstreamStart + "-";
       }
       if (req.headers['if-range']) {
         headers['If-Range'] = req.headers['if-range'];
@@ -134,88 +148,104 @@ app.get('/api/stream-download', (req, res) => {
 
       const agent = parsed.protocol === 'https:' ? httpsAgent : httpAgent;
 
-      activeReq = client.get(urlToFetch, { headers, agent, highWaterMark: 1024 * 1024 }, (stream) => {
-        activeStream = stream;
+      currentActiveReq = client.get(currentFetchUrl, { headers, agent, highWaterMark: 1024 * 1024 }, (stream) => {
+        currentActiveStream = stream;
 
-        // Tự động theo dõi chuyển hướng 301/302 nếu chưa gửi headers
+        // Xử lý chuyển hướng 301/302
         if ([301, 302, 303, 307, 308].includes(stream.statusCode) && stream.headers.location && !isHeadersSent) {
           let nextUrl = stream.headers.location;
           if (nextUrl.startsWith('//')) nextUrl = 'https:' + nextUrl;
-          else if (!nextUrl.startsWith('http')) nextUrl = new URL(nextUrl, urlToFetch).toString();
-          return connectAndStream(nextUrl, byteOffset, retriesLeft);
+          else if (!nextUrl.startsWith('http')) nextUrl = new URL(nextUrl, currentFetchUrl).toString();
+          return connect(nextUrl, byteOffset, redirectsLeft - 1, retriesLeft);
         }
 
+        const upstreamStatusCode = stream.statusCode;
+        const upstreamIs206 = (upstreamStatusCode === 206);
+
+        // Xác định tổng kích thước file
+        let fullFileSize = totalKnownSize;
+        if (stream.headers['content-range']) {
+          const m = stream.headers['content-range'].match(/\/(\d+)/);
+          if (m) fullFileSize = parseInt(m[1], 10);
+        }
+        if (!fullFileSize && stream.headers['content-length']) {
+          const cl = parseInt(stream.headers['content-length'], 10);
+          if (upstreamIs206 && upstreamStart > 0) {
+            fullFileSize = upstreamStart + cl;
+          } else {
+            fullFileSize = cl;
+          }
+        }
+
+        // GỬI HEADERS CHO CHROME (CHỈ 1 LẦN DUY NHẤT)
         if (!isHeadersSent) {
           isHeadersSent = true;
           res.setHeader('Content-Disposition', 'attachment; filename="' + encodeURIComponent(filename) + '"');
-          res.setHeader('Content-Type', 'application/octet-stream');
+          res.setHeader('Content-Type', 'video/mp4');
           res.setHeader('Accept-Ranges', 'bytes');
-          const stableHash = crypto.createHash('md5').update(filename + (targetUrl.split('?')[0])).digest('hex');
-          res.setHeader('ETag', '"' + stableHash + '"');
-          res.setHeader('Last-Modified', 'Sun, 01 Jan 2026 00:00:00 GMT');
+          res.setHeader('ETag', etag);
+          res.setHeader('Last-Modified', lastModified);
           res.setHeader('Cache-Control', 'public, max-age=86400');
           if (res.socket) res.socket.setNoDelay(true);
 
-          res.status(stream.statusCode || 200);
-
-          if (stream.headers['content-length']) {
-            totalExpectedBytes = parseInt(stream.headers['content-length'], 10);
-            res.setHeader('Content-Length', stream.headers['content-length']);
-          }
-          if (stream.headers['content-range']) {
-            res.setHeader('Content-Range', stream.headers['content-range']);
-            const match = stream.headers['content-range'].match(/\/(\d+)/);
-            if (match) totalExpectedBytes = parseInt(match[1], 10);
+          if (isRangeRequest) {
+            // BẮT BUỘC TRẢ VỀ 206 ĐỂ CHROME TẢI NỐI TIẾP KHÔNG RESET VỀ 0%
+            res.status(206);
+            const end = (clientEnd !== null) ? clientEnd : (fullFileSize > 0 ? fullFileSize - 1 : undefined);
+            if (fullFileSize > 0 && end !== undefined) {
+              res.setHeader('Content-Range', "bytes " + clientStart + "-" + end + "/" + fullFileSize);
+              res.setHeader('Content-Length', end - clientStart + 1);
+            } else if (stream.headers['content-range']) {
+              res.setHeader('Content-Range', stream.headers['content-range']);
+              if (stream.headers['content-length']) res.setHeader('Content-Length', stream.headers['content-length']);
+            }
+          } else {
+            res.status(upstreamStatusCode || 200);
+            if (stream.headers['content-length']) {
+              res.setHeader('Content-Length', stream.headers['content-length']);
+            }
           }
         }
 
+        // XỬ LÝ TRUYỀN DỮ LIỆU:
+        // Nếu upstream trả về 200 thay vì 206, ta tự động bỏ qua (skip) các byte đầu đã tải
+        let skipBytes = 0;
+        if (isRangeRequest && !upstreamIs206 && upstreamStart > 0 && byteOffset === 0) {
+          skipBytes = upstreamStart;
+        }
+
         stream.on('data', (chunk) => {
-          totalDownloadedBytes += chunk.length;
+          if (skipBytes > 0) {
+            if (chunk.length <= skipBytes) {
+              skipBytes -= chunk.length;
+              return;
+            } else {
+              chunk = chunk.slice(skipBytes);
+              skipBytes = 0;
+            }
+          }
           res.write(chunk);
         });
 
         stream.on('end', () => {
-          // CHỐNG RỚT MẠNG: Nếu chưa tải đủ 100% số byte, TỰ ĐỘNG NỐI TIẾP kết nối không ngắt Chrome!
-          if (totalExpectedBytes > 0 && totalDownloadedBytes < totalExpectedBytes && retriesLeft > 0) {
-            console.warn('[Auto-Resume] CDN bị ngắt ở ' + totalDownloadedBytes + '/' + totalExpectedBytes + ' bytes. Đang tự động kết nối lại nối tiếp...');
-            setTimeout(() => {
-              connectAndStream(currentTargetUrl, totalDownloadedBytes, retriesLeft - 1);
-            }, 800);
-          } else {
-            // ĐÃ TẢI HOÀN TOÀN 100% -> LÚC NÀY MỚI NGẮT KẾT NỐI!
-            if (!res.writableEnded) res.end();
-          }
+          if (!res.writableEnded) res.end();
         });
 
         stream.on('error', (err) => {
           console.warn('[Stream Error]', err.message);
-          if (totalExpectedBytes > 0 && totalDownloadedBytes < totalExpectedBytes && retriesLeft > 0) {
-            console.warn('[Auto-Resume] Lỗi luồng CDN, đang tự động kết nối lại từ byte ' + totalDownloadedBytes + '...');
-            setTimeout(() => {
-              connectAndStream(currentTargetUrl, totalDownloadedBytes, retriesLeft - 1);
-            }, 1000);
-          } else {
-            if (!res.writableEnded) res.end();
-          }
+          if (!res.writableEnded) res.end();
         });
       });
 
-      activeReq.on('socket', (sock) => {
+      currentActiveReq.on('socket', (sock) => {
         sock.setNoDelay(true);
         sock.setKeepAlive(true, 15000);
       });
 
-      activeReq.on('error', (err) => {
-        console.warn('[StreamReq Error]', err.message);
-        if (totalExpectedBytes > 0 && totalDownloadedBytes < totalExpectedBytes && retriesLeft > 0) {
-          setTimeout(() => {
-            connectAndStream(currentTargetUrl, totalDownloadedBytes, retriesLeft - 1);
-          }, 1500);
-        } else if (!res.headersSent) {
-          res.status(502).send('Lỗi kết nối máy chủ CDN: ' + err.message);
-        } else {
-          if (!res.writableEnded) res.end();
-        }
+      currentActiveReq.on('error', (err) => {
+        console.warn('[Request Error]', err.message);
+        if (!res.headersSent) res.status(502).send('Lỗi kết nối máy chủ CDN: ' + err.message);
+        else if (!res.writableEnded) res.end();
       });
 
     } catch (e) {
@@ -224,7 +254,22 @@ app.get('/api/stream-download', (req, res) => {
     }
   }
 
-  connectAndStream(targetUrl);
+  connect(targetUrl);
+}
+
+// Proxy Stream Download: Hỗ trợ mọi video tải tiếp Resume mượt mà trên Chrome
+app.get('/api/stream-download', (req, res) => {
+  let targetUrl = req.query.url;
+  const filename = req.query.filename || 'video.mp4';
+
+  if (!targetUrl) return res.status(400).send('Thiếu URL tải về');
+
+  targetUrl = String(targetUrl).trim();
+  if (targetUrl.startsWith('//')) {
+    targetUrl = 'https:' + targetUrl;
+  }
+
+  streamToClientWithRange(req, res, targetUrl, filename);
 });
 
 // Tải trực tiếp qua yt-dlp core cho YouTube & các nền tảng phức tạp
@@ -374,109 +419,12 @@ app.get('/api/bili-download', async (req, res) => {
       );
     }
 
+    // 3. Đặt tên file chuẩn và truyền qua bộ điều phối Range siêu bền (Resume 206)
     const safeFilename = (filename || `${bvid}_part${part || 1}.mp4`)
       .replace(/[^\w.\-\u4E00-\u9FFF\u3040-\u30FF]+/g, '_');
-    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(safeFilename)}"`);
-    res.setHeader('Content-Type', 'video/mp4');
-    res.setHeader('Accept-Ranges', 'bytes');
-    const biliHash = crypto.createHash('md5').update(safeFilename + bvid + cid).digest('hex');
-    res.setHeader('ETag', '"' + biliHash + '"');
-    res.setHeader('Last-Modified', 'Sun, 01 Jan 2026 00:00:00 GMT');
-    res.setHeader('Cache-Control', 'public, max-age=86400');
-    if (!req.headers.range && totalBytes > 0) res.setHeader('Content-Length', totalBytes);
-    if (res.socket) res.socket.setNoDelay(true);
 
-    const streamHeaders = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      'Referer': 'https://www.bilibili.com/'
-    };
-    if (req.headers.range) streamHeaders['Range'] = req.headers.range;
-    if (req.headers['if-range']) streamHeaders['If-Range'] = req.headers['if-range'];
+    return streamToClientWithRange(req, res, freshCdnUrl, safeFilename, { 'Referer': 'https://www.bilibili.com/' }, totalBytes);
 
-    // 5. Proxy stream với cơ chế tự động Auto-Resume nối tiếp đến khi tải đủ 100%
-    let biliDownloadedBytes = 0;
-    let biliExpectedBytes = totalBytes;
-    let isBiliHeadersSent = false;
-
-    function streamFromUrl(targetCdn, fallbackTarget, retriesLeft = 10) {
-      if (res.writableEnded || res.destroyed) return;
-
-      const currentHeaders = { ...streamHeaders };
-      if (biliDownloadedBytes > 0) {
-        currentHeaders['Range'] = "bytes=" + biliDownloadedBytes + "-";
-      }
-
-      const biliReq = https.get(targetCdn, { headers: currentHeaders, agent: httpsAgent, highWaterMark: 1024 * 1024 }, (stream) => {
-        if (stream.statusCode >= 400 && fallbackTarget && targetCdn !== fallbackTarget && !isBiliHeadersSent) {
-          console.warn("[Bili Turbo CDN] Mirror lỗi, chuyển về CDN gốc");
-          return streamFromUrl(fallbackTarget, null, retriesLeft);
-        }
-
-        if (!isBiliHeadersSent) {
-          isBiliHeadersSent = true;
-          res.status(stream.statusCode || 200);
-          if (stream.headers['content-length']) {
-            biliExpectedBytes = parseInt(stream.headers['content-length'], 10);
-            res.setHeader('Content-Length', stream.headers['content-length']);
-          }
-          if (stream.headers['content-range']) {
-            res.setHeader('Content-Range', stream.headers['content-range']);
-            const m = stream.headers['content-range'].match(/\/(\d+)/);
-            if (m) biliExpectedBytes = parseInt(m[1], 10);
-          }
-        }
-
-        stream.on('data', (chunk) => {
-          biliDownloadedBytes += chunk.length;
-          res.write(chunk);
-        });
-
-        stream.on('end', () => {
-          if (biliExpectedBytes > 0 && biliDownloadedBytes < biliExpectedBytes && retriesLeft > 0) {
-            console.warn('[Bili Auto-Resume] Bilibili bị ngắt ở ' + biliDownloadedBytes + '/' + biliExpectedBytes + '. Đang tự động kết nối lại nối tiếp...');
-            setTimeout(() => {
-              streamFromUrl(targetCdn, fallbackTarget, retriesLeft - 1);
-            }, 800);
-          } else {
-            if (!res.writableEnded) res.end();
-          }
-        });
-
-        stream.on('error', (e) => {
-          console.warn('[Bili CDN stream error]', e.message);
-          if (biliExpectedBytes > 0 && biliDownloadedBytes < biliExpectedBytes && retriesLeft > 0) {
-            setTimeout(() => {
-              streamFromUrl(fallbackTarget || targetCdn, null, retriesLeft - 1);
-            }, 1000);
-          } else {
-            if (!res.writableEnded) res.end();
-          }
-        });
-      });
-
-      biliReq.on('socket', (sock) => {
-        sock.setNoDelay(true);
-        sock.setKeepAlive(true, 15000);
-      });
-
-      biliReq.on('error', (err) => {
-        console.warn("[Bili CDN Connect Error]", err.message);
-        if (fallbackTarget && targetCdn !== fallbackTarget && !isBiliHeadersSent) {
-          return streamFromUrl(fallbackTarget, null, retriesLeft);
-        }
-        if (biliExpectedBytes > 0 && biliDownloadedBytes < biliExpectedBytes && retriesLeft > 0) {
-          setTimeout(() => {
-            streamFromUrl(fallbackTarget || targetCdn, null, retriesLeft - 1);
-          }, 1500);
-        } else if (!res.headersSent) {
-          res.status(502).send('Không kết nối được CDN Bilibili: ' + err.message);
-        } else {
-          if (!res.writableEnded) res.end();
-        }
-      });
-    }
-
-    streamFromUrl(freshCdnUrl, rawCdnUrl);
   } catch (err) {
     console.error('[/api/bili-download]', err.message);
     if (!res.headersSent) res.status(500).send('Lỗi máy chủ: ' + err.message);
